@@ -2,6 +2,7 @@ import { ApiModule } from '../types/api';
 
 export const regioesMetropolitanasModule: ApiModule = {
   name: "Regiões Metropolitanas",
+  description: "Obtém o conjunto de regiões metropolitanas do Brasil.",
   endpoints: [
     {
       summary: "Listar todas as regiões metropolitanas",

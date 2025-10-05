@@ -2,6 +2,7 @@ import { ApiModule } from '../types/api';
 
 export const regioesIntermediariasModule: ApiModule = {
   name: "Regiões Intermediárias",
+  description: "Obtém o conjunto de regiões intermediárias do Brasil.",
   endpoints: [
     {
       summary: "Listar todas as regiões intermediárias",

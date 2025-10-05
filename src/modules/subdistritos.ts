@@ -2,6 +2,7 @@ import { ApiModule } from '../types/api';
 
 export const subdistritosModule: ApiModule = {
   name: "Subdistritos",
+  description: "Obtém o conjunto de subdistritos do Brasil.",
   endpoints: [
     {
       summary: "Listar todos os subdistritos",

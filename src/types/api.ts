@@ -20,5 +20,6 @@ export interface ApiEndpoint {
 
 export interface ApiModule {
   name: string;
+  description?: string; // Adicionado para descrições de módulo
   endpoints: ApiEndpoint[];
 }

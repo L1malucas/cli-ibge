@@ -2,6 +2,9 @@
   "name": "cli-ibge",
   "version": "1.0.0",
   "description": "Uma CLI para consultar a API de localidades do IBGE.",
+  "repository": {
+    "url": "https://github.com/L1malucas/cli-ibge/"
+  },
   "main": "dist/main.js",
   "bin": {
     "ibge-cli": "dist/main.js"

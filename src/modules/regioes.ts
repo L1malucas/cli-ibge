@@ -2,6 +2,7 @@ import { ApiModule } from '../types/api';
 
 export const regioesModule: ApiModule = {
   name: "Regiões",
+  description: "Obtém o conjunto de regiões do Brasil.",
   endpoints: [
     {
       summary: "Listar todas as regiões do Brasil",

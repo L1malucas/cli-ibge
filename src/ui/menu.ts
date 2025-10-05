@@ -12,11 +12,21 @@ const QUIT_OPTION = { name: 'Sair', value: null };
 
 function printModulesInColumns() {
   console.log(chalk.bold('Selecione o grupo de informações que deseja consultar:'));
+  
+  const terminalWidth = process.stdout.columns || 80; // Largura do terminal, padrão 80
+  const numColumns = 2; // Manter 2 colunas para legibilidade
+  const columnWidth = Math.floor(terminalWidth / numColumns); // Largura de cada coluna
+
   let output = '';
   allModules.forEach((module, index) => {
     const number = chalk.dim(`${index + 1}.`);
-    output += `${number} ${module.name}`.padEnd(40, ' ');
-    if ((index + 1) % 2 === 0) {
+    const moduleName = module.name;
+    const item = `${number} ${moduleName}`;
+
+    // Adiciona padding para alinhar as colunas
+    output += item.padEnd(columnWidth, ' ');
+
+    if ((index + 1) % numColumns === 0 || index === allModules.length - 1) {
       output += '\n';
     }
   });
@@ -55,7 +65,7 @@ async function selectEndpoint(module: ApiModule): Promise<ApiEndpoint | null> {
           name: 'selectedEndpoint',
           message: 'Qual informação específica você quer?',
           source: (_: any, input: string) => {
-            const endpoints = module.endpoints.map(e => ({ name: e.summary, value: e }));
+            const endpoints = module.endpoints.map(e => ({ name: `${e.summary} - ${e.description}`, value: e }));
             if (!input) return [new inquirer.Separator('---'), QUIT_OPTION, new inquirer.Separator('---'), ...endpoints];
             
             const filteredEndpoints = endpoints.filter(e => e.name.toLowerCase().includes(input.toLowerCase()));
@@ -71,6 +81,10 @@ export async function showMainMenu() {
     const selectedModule = await selectModule();
 
     if (!selectedModule) break; // Sai do loop principal
+
+    if (selectedModule.description) {
+      console.log(chalk.italic.dim(`\nDescrição: ${selectedModule.description}\n`));
+    }
 
     const selectedEndpoint = await selectEndpoint(selectedModule);
 

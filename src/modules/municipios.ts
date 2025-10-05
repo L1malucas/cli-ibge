@@ -2,6 +2,7 @@ import { ApiModule } from '../types/api';
 
 export const municipiosModule: ApiModule = {
   name: "Municípios",
+  description: "Obtém o conjunto de municípios do Brasil.",
   endpoints: [
     {
       summary: "Listar todos os municípios",

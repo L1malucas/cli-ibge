@@ -2,6 +2,7 @@ import { ApiModule } from '../types/api';
 
 export const microrregioesModule: ApiModule = {
   name: "Microrregiões",
+  description: "Obtém o conjunto de microrregiões do Brasil.",
   endpoints: [
     {
       summary: "Listar todas as microrregiões",

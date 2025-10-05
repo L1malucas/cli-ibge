@@ -2,6 +2,7 @@ import { ApiModule } from '../types/api';
 
 export const distritosModule: ApiModule = {
   name: "Distritos",
+  description: "Obtém o conjunto de distritos do Brasil.",
   endpoints: [
     {
       summary: "Listar todos os distritos do Brasil",

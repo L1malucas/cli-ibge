@@ -2,6 +2,7 @@ import { ApiModule } from '../types/api';
 
 export const mesorregioesModule: ApiModule = {
   name: "Mesorregiões",
+  description: "Obtém o conjunto de mesorregiões do Brasil.",
   endpoints: [
     {
       summary: "Listar todas as mesorregiões",

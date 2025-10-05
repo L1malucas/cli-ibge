@@ -2,6 +2,7 @@ import { ApiModule } from '../types/api';
 
 export const ufsModule: ApiModule = {
   name: "Unidades da Federação (UFs)",
+  description: "Obtém o conjunto de Unidades da Federação do Brasil.",
   endpoints: [
     {
       summary: "Listar todas as Unidades da Federação",

@@ -2,6 +2,7 @@ import { ApiModule } from '../types/api';
 
 export const paisesModule: ApiModule = {
   name: "Países",
+  description: "Obtém o conjunto de países.",
   endpoints: [
     {
       summary: "Listar todos os países",

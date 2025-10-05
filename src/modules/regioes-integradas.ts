@@ -1,7 +1,8 @@
 import { ApiModule } from '../types/api';
 
 export const regioesIntegradasModule: ApiModule = {
-  name: "Regiões Integradas de Desenv",
+  name: "Regiões Integradas de Desenvolvimento",
+  description: "Obtém o conjunto de regiões integradas de desenvolvimento do Brasil.",
   endpoints: [
     {
       summary: "Listar todas as Regiões Integradas de Desenvolvimento",
