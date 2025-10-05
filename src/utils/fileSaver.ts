@@ -2,8 +2,8 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
-
 import ora from 'ora';
+import { logError } from './logger';
 
 export async function saveDataToJson(data: any, endpointPath: string) {
   console.log(chalk.bold.yellow('\nOnde você gostaria de salvar o resultado?'));
@@ -28,8 +28,9 @@ export async function saveDataToJson(data: any, endpointPath: string) {
     await fs.writeFile(fullPath, JSON.stringify(data, null, 2));
     spinner.succeed(chalk.green(`Resultado salvo com sucesso!`));
     console.log(chalk.dim(fullPath));
-  } catch (error) {
+  } catch (error: any) {
     spinner.fail(chalk.red(`Erro ao salvar o arquivo.`));
     console.error(chalk.red(error));
+    logError(error, { filePath: fullPath, data: data });
   }
 }

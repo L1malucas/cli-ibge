@@ -6,6 +6,7 @@ import { ApiModule, ApiEndpoint } from '../types/api';
 import { promptForParameters } from './prompts';
 import { executeRequest } from '../api/ibge';
 import { saveDataToJson } from '../utils/fileSaver';
+import { logError } from '../utils/logger';
 
 const QUIT_OPTION = { name: 'Sair', value: null };
 
@@ -78,12 +79,25 @@ export async function showMainMenu() {
     const params = await promptForParameters(selectedEndpoint.parameters);
 
     const spinner = ora(chalk.yellow('Buscando dados na API do IBGE...')).start();
-    const result = await executeRequest(selectedEndpoint.path, params);
+    let result = null;
+    try {
+      result = await executeRequest(selectedEndpoint.path, params);
+    } catch (error: any) {
+      spinner.fail(chalk.red('Erro ao executar a requisição.'));
+      console.error(chalk.red(error.message));
+      logError(error, { path: selectedEndpoint.path, params });
+    }
 
     if (result) {
         spinner.succeed(chalk.green('Dados recebidos com sucesso!'));
-        await saveDataToJson(result, selectedEndpoint.path);
-    } else {
+        try {
+          await saveDataToJson(result, selectedEndpoint.path);
+        } catch (error: any) {
+          spinner.fail(chalk.red('Erro ao salvar o resultado.'));
+          console.error(chalk.red(error.message));
+          logError(error, { data: result, endpointPath: selectedEndpoint.path });
+        }
+    } else if (result === null) {
         spinner.fail(chalk.red('A requisição não retornou dados ou falhou.'));
     }
 
