@@ -1,71 +1,104 @@
 import inquirer from 'inquirer';
-import inquirerAutocompletePrompt from 'inquirer-autocomplete-prompt';
 import chalk from 'chalk';
+import ora from 'ora';
+import { allModules } from '../modules';
+import { ApiModule, ApiEndpoint } from '../types/api';
 import { promptForParameters } from './prompts';
 import { executeRequest } from '../api/ibge';
 import { saveDataToJson } from '../utils/fileSaver';
-import { allModules } from '../modules';
-import { ApiModule, ApiEndpoint } from '../types/api';
 
-// ... (o resto do arquivo continua igual, apenas a fonte dos módulos muda)
+const QUIT_OPTION = { name: 'Sair', value: null };
 
-export async function showMainMenu() {
-  while (true) {
-    // 1. Selecionar o Módulo
-    const { selectedModule }: { selectedModule: ApiModule } = await inquirer.prompt([
-      {
-        type: 'autocomplete',
-        name: 'selectedModule',
-        message: 'Qual grupo de informações você deseja consultar?',
-        source: (_: any, input: string) => {
-          const modules = allModules.map(m => ({ name: m.name, value: m }));
-          if (!input) return modules;
-          return modules.filter(m => m.name.toLowerCase().includes(input.toLowerCase()));
-        },
+function printModulesInColumns() {
+  console.log(chalk.bold('Selecione o grupo de informações que deseja consultar:'));
+  let output = '';
+  allModules.forEach((module, index) => {
+    const number = chalk.dim(`${index + 1}.`);
+    output += `${number} ${module.name}`.padEnd(40, ' ');
+    if ((index + 1) % 2 === 0) {
+      output += '\n';
+    }
+  });
+  console.log(output);
+  console.log(chalk.dim('0. Sair'));
+}
+
+async function selectModule(): Promise<ApiModule | null> {
+  printModulesInColumns();
+  const { moduleIndex } = await inquirer.prompt([
+    {
+      type: 'input',
+      name: 'moduleIndex',
+      message: 'Digite o número da opção desejada:',
+      validate: (input) => {
+        const num = parseInt(input, 10);
+        if (isNaN(num) || num < 0 || num > allModules.length) {
+          return 'Por favor, digite um número válido da lista.';
+        }
+        return true;
       },
-    ]);
+    },
+  ]);
 
-    // 2. Selecionar o Endpoint
-    const { selectedEndpoint }: { selectedEndpoint: ApiEndpoint } = await inquirer.prompt([
+  const index = parseInt(moduleIndex, 10);
+  if (index === 0) {
+    return null;
+  }
+  return allModules[index - 1];
+}
+
+async function selectEndpoint(module: ApiModule): Promise<ApiEndpoint | null> {
+    const { selectedEndpoint } = await inquirer.prompt([
         {
           type: 'autocomplete',
           name: 'selectedEndpoint',
           message: 'Qual informação específica você quer?',
           source: (_: any, input: string) => {
-            const endpoints = selectedModule.endpoints.map(e => ({ name: e.summary, value: e }));
-            if (!input) return endpoints;
-            return endpoints.filter(e => e.name.toLowerCase().includes(input.toLowerCase()));
+            const endpoints = module.endpoints.map(e => ({ name: e.summary, value: e }));
+            if (!input) return [new inquirer.Separator('---'), QUIT_OPTION, new inquirer.Separator('---'), ...endpoints];
+            
+            const filteredEndpoints = endpoints.filter(e => e.name.toLowerCase().includes(input.toLowerCase()));
+            return [new inquirer.Separator('---'), QUIT_OPTION, new inquirer.Separator('---'), ...filteredEndpoints];
           },
         },
       ]);
+    return selectedEndpoint;
+}
 
-    // 3. Coletar Parâmetros
+export async function showMainMenu() {
+  while (true) {
+    const selectedModule = await selectModule();
+
+    if (!selectedModule) break; // Sai do loop principal
+
+    const selectedEndpoint = await selectEndpoint(selectedModule);
+
+    if (!selectedEndpoint) continue; // Volta para o menu de módulos
+
     const params = await promptForParameters(selectedEndpoint.parameters);
 
-    // 4. Executar a Requisição
-    console.log(chalk.yellow('\nBuscando dados na API do IBGE...'));
+    const spinner = ora(chalk.yellow('Buscando dados na API do IBGE...')).start();
     const result = await executeRequest(selectedEndpoint.path, params);
 
-    // 5. Salvar o Resultado
     if (result) {
-        console.log(chalk.green('Dados recebidos com sucesso!'));
+        spinner.succeed(chalk.green('Dados recebidos com sucesso!'));
         await saveDataToJson(result, selectedEndpoint.path);
     } else {
-        console.log(chalk.red('A requisição não retornou dados.'));
+        spinner.fail(chalk.red('A requisição não retornou dados ou falhou.'));
     }
 
-    // 6. Continuar ou Sair
-    const { continueOrExit } = await inquirer.prompt([{
-        type: 'list',
-        name: 'continueOrExit',
-        message: 'Deseja fazer outra consulta?',
-        choices: ['Sim', 'Não'],
-    }]);
+    const { continueOrExit } = await inquirer.prompt([
+        {
+            type: 'list',
+            name: 'continueOrExit',
+            message: 'Deseja fazer outra consulta?',
+            choices: ['Sim', 'Não'],
+        },
+    ]);
 
-    if (continueOrExit === 'Não') {
-        console.log(chalk.bold.cyan('\nObrigado por usar a CLI IBGE. Até mais!'));
-        break;
-    }
+    if (continueOrExit === 'Não') break;
+    
     console.clear();
   }
+  console.log(chalk.bold.cyan('\nObrigado por usar a CLI IBGE. Até mais!'));
 }

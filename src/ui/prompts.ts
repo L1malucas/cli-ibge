@@ -11,12 +11,21 @@ function getNestedValue(obj: any, path: string) {
 // Registra o tipo de prompt 'autocomplete'
 inquirer.registerPrompt('autocomplete', inquirerAutocompletePrompt);
 
+import ora from 'ora';
+
 // Função que busca as opções para o autocomplete
 async function getSourceOptions(source: ApiParameter['source']) {
   if (!source) return [];
+  
+  const spinner = ora(`Buscando opções para ${source.displayField}...`).start();
   const items = await executeRequest(source.endpoint, {});
-  if (!Array.isArray(items)) return [];
+  
+  if (!Array.isArray(items)) {
+    spinner.fail('Falha ao buscar opções.');
+    return [];
+  }
 
+  spinner.succeed();
   return items.map(item => ({
     name: getNestedValue(item, source.displayField), // O que o usuário vê
     value: getNestedValue(item, source.valueField),  // O valor real (o ID)

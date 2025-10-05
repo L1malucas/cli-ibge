@@ -25,9 +25,9 @@ export const allModules: ApiModule[] = [
   regioesImediatasModule,
   regioesIntermediariasModule,
   regioesMetropolitanasModule,
-  regioesIntegradasModule,
   paisesModule,
   mesorregioesModule,
   microrregioesModule,
   aglomeracoesUrbanasModule,
+  regioesIntegradasModule,
 ].sort((a, b) => a.name.localeCompare(b.name)); // Ordena os módulos alfabeticamente para exibição no menu

@@ -3,6 +3,8 @@ import * as path from 'path';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 
+import ora from 'ora';
+
 export async function saveDataToJson(data: any, endpointPath: string) {
   console.log(chalk.bold.yellow('\nOnde você gostaria de salvar o resultado?'));
 
@@ -21,10 +23,13 @@ export async function saveDataToJson(data: any, endpointPath: string) {
   const fileName = `${sanitizedPath}_${timestamp}.json`;
   const fullPath = path.resolve(saveLocation, fileName);
 
+  const spinner = ora(`Salvando arquivo em ${fullPath}...`).start();
   try {
     await fs.writeFile(fullPath, JSON.stringify(data, null, 2));
-    console.log(chalk.green(`\nResultado salvo com sucesso em: ${fullPath}`));
+    spinner.succeed(chalk.green(`Resultado salvo com sucesso!`));
+    console.log(chalk.dim(fullPath));
   } catch (error) {
-    console.error(chalk.red(`\nErro ao salvar o arquivo em ${fullPath}:`), error);
+    spinner.fail(chalk.red(`Erro ao salvar o arquivo.`));
+    console.error(chalk.red(error));
   }
 }
