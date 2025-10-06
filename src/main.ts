@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import chalk from 'chalk';
 import { showMainMenu } from './ui/menu';
 import { appInfo } from './config/app-info';

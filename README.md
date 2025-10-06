@@ -4,6 +4,18 @@
 
 Uma interface de linha de comando (CLI) interativa e amigável para consultar a API de Localidades do Instituto Brasileiro de Geografia e Estatística (IBGE). Desenvolvida com foco em experiência do usuário, esta ferramenta permite navegar pelos diversos endpoints da API de forma intuitiva, sem a necessidade de memorizar IDs ou URLs complexas.
 
+## Sumário
+
+- [Objetivo](#objetivo)
+- [Funcionalidades](#funcionalidades)
+- [Tecnologias Utilizadas](#tecnologias-utilizadas)
+- [Instalação](#instalação)
+- [Como Usar](#como-usar)
+- [Estrutura do Projeto e Mapeamento da API](#estrutura-do-projeto-e-mapeamento-da-api)
+- [Como Adicionar ou Modificar Endpoints](#como-adicionar-ou-modificar-endpoints)
+- [Reportando Problemas e Contribuições](#reportando-problemas-e-contribuições)
+- [Licença](#licença)
+
 ## Objetivo
 
 Facilitar o acesso aos dados geográficos e estatísticos do IBGE através de uma interface de terminal colorida e interativa. A CLI abstrai a complexidade das requisições HTTP e do gerenciamento de IDs, permitindo que o usuário se concentre na obtenção das informações desejadas.
@@ -31,34 +43,18 @@ Facilitar o acesso aos dados geográficos e estatísticos do IBGE através de um
 
 ### Pré-requisitos
 
-Certifique-se de ter o [Node.js](https://nodejs.org/) (versão 14 ou superior) e o [Yarn](https://yarnpkg.com/) instalados em sua máquina.
+Certifique-se de ter o [Node.js](https://nodejs.org/) (versão 20 ou superior) e o [NPM](https://www.npmjs.com/) instalados em sua máquina.
 
 ### Passos
 
-1.  **Clone o repositório:**
+1.  **Instale o pacote globalmente:**
     ```bash
-    git clone https://github.com/L1malucas/cli-ibge.git
-    cd cli-ibge
+    npm i -g cli-ibge
     ```
 
-2.  **Instale as dependências:**
+2.  **Execute o comando para iniciar:**
     ```bash
-    yarn install
-    ```
-
-3.  **Compile o projeto:**
-    ```bash
-    yarn build
-    ```
-
-4.  **Torne a CLI executável globalmente (opcional):**
-    ```bash
-    yarn link
-    # Agora você pode executar a CLI de qualquer lugar usando 'ibge-cli'
-    ```
-    Ou, para executar diretamente do diretório do projeto:
-    ```bash
-    yarn dev
+    cli-ibge
     ```
 
 ## Como Usar
@@ -66,14 +62,14 @@ Certifique-se de ter o [Node.js](https://nodejs.org/) (versão 14 ou superior) e
 Para iniciar a CLI, você tem algumas opções:
 
 ```bash
-# Se você instalou globalmente com 'yarn link'
+# Se você instalou globalmente com 'npm link'
 ibge-cli
 
 # Se você deseja executar diretamente do diretório do projeto
-yarn dev
+npm run dev
 
 # Se o pacote estiver publicado no npm, você pode usar npx
-npx ibge-cli
+npx cli-ibge
 ```
 
 ### Navegação na CLI
@@ -130,6 +126,35 @@ export const meuNovoModulo: ApiModule = {
   ]
 };
 ```
+
+### Contribuindo com Modificações
+
+Se você deseja adicionar novos endpoints ou melhorar os existentes, siga estes passos:
+
+1.  **Faça um Fork do Repositório:**
+    Clique no botão "Fork" no canto superior direito da página do repositório no GitHub para criar uma cópia do projeto em sua conta.
+
+2.  **Clone o seu Fork:**
+    ```bash
+    git clone https://github.com/SEU-USUARIO/cli-ibge.git
+    cd cli-ibge
+    ```
+
+3.  **Crie uma Nova Branch:**
+    ```bash
+    git checkout -b minha-modificacao
+    ```
+
+4.  **Aplique suas Modificações:**
+    Edite os arquivos em `src/modules/` conforme necessário.
+
+5.  **Envie suas Alterações e Abra um Pull Request:**
+    ```bash
+    git add .
+    git commit -m "feat: Adiciona novos endpoints para ..."
+    git push origin minha-modificacao
+    ```
+    Depois, vá para a página do seu fork no GitHub e clique em "New pull request".
 
 ## Reportando Problemas e Contribuições
 
